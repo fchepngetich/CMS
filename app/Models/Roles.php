@@ -8,6 +8,6 @@ class Roles extends Model
 {
     protected $table            = 'roles';
     protected $primaryKey       = 'id';
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['name'];
 
 }

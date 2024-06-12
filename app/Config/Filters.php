@@ -38,8 +38,6 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'cifilter'      =>CIFilter::class,
         'auth'          =>AuthMiddleware::class,
-
-
     ];
 
     /**
@@ -75,6 +73,8 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'csrf' => ['except' => ['userroles/delete/*']],
+
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',

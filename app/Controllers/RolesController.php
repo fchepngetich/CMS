@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Controllers;
 
 use App\Models\Roles;
@@ -143,4 +143,71 @@ public function getRoles()
 
 
     
+}*/
+
+
+namespace App\Controllers;
+
+use App\Models\Roles;
+use App\Libraries\CIAuth;
+
+
+use App\Controllers\BaseController;
+use CodeIgniter\HTTP\ResponseInterface;
+
+class RolesController extends BaseController
+{
+    public function index()
+    {
+        $model = new RolesController();
+        $data['roles'] = $model->findAll();
+        return view('user_roles/index', $data);
+    }
+
+    public function create()
+    {
+        return view('user_roles/create');
+    }
+
+    public function store()
+    {
+        $model = new UserRoleModel();
+
+        $data = [
+            'role_name' => $this->request->getPost('role_name'),
+        ];
+
+        $model->save($data);
+
+        return redirect()->to('/userroles');
+    }
+
+    public function edit($id = null)
+    {
+        $model = new UserRoleModel();
+        $data['role'] = $model->find($id);
+
+        return view('user_roles/edit', $data);
+    }
+
+    public function update($id = null)
+    {
+        $model = new UserRoleModel();
+
+        $data = [
+            'role_name' => $this->request->getPost('role_name'),
+        ];
+
+        $model->update($id, $data);
+
+        return redirect()->to('/userroles');
+    }
+
+    public function delete($id = null)
+    {
+        $model = new UserRoleModel();
+        $model->delete($id);
+
+        return redirect()->to('/userroles');
+    }
 }

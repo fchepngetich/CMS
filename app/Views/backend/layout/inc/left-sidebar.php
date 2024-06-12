@@ -61,7 +61,7 @@
 
 					<li>
 					<li>
-						<a href="<?= route_to('admin.roles.index') ?>" class="dropdown-toggle no-arrow">
+						<a href="<?= base_url('userroles') ?>" class="dropdown-toggle no-arrow">
 							<span class="micon dw dw-list"></span><span class="mtext">Roles</span>
 						</a>
 

@@ -1,5 +1,35 @@
 <?php
 
+
+namespace Config;
+
+use CodeIgniter\Config\BaseConfig;
+use CodeIgniter\Router\Router;
+use App\Controllers\UserRoleController;
+
+$routes = Services::routes();
+
+$routes->setDefaultNamespace('App\Controllers');
+$routes->setDefaultController('Home');
+$routes->setDefaultMethod('index');
+$routes->setTranslateURIDashes(false);
+$routes->set404Override();
+$routes->setAutoRoute(false);
+
+$routes->get('/', 'Home::index');
+$routes->get('/userroles', 'UserRoleController::index');
+$routes->post('/userroles/store', 'UserRoleController::store');
+$routes->get('/userroles/create', 'UserRoleController::create');
+$routes->get('/userroles/edit/(:num)', 'UserRoleController::edit/$1');
+$routes->post('/userroles/update/(:num)', 'UserRoleController::update/$1');
+$routes->get('/userroles/delete/(:num)', 'UserRoleController::delete/$1');
+$routes->post('/tickets/close/(:num)', 'TicketController::closeTicket/$1');
+$routes->post('/tickets/reopen/(:num)', 'TicketController::reopenTicket/$1');
+
+
+
+
+
 use CodeIgniter\Router\RouteCollection;
 
 /**
@@ -31,9 +61,9 @@ $routes->group('',['filter'=>'cifilter:auth'],static function($routes){
     $routes->get('get-users','AdminController::getUsers',['as'=>'get-users']);
     $routes->get('new-user','AdminController::addUser',['as'=>'new-user']);
     $routes->post('create-user','AdminController::createUser',['as'=>'create-user']);
-    $routes->get('users/edit/(:num)', 'AdminController::editUser/$1', ['as' => 'admin.users.edit']);
+    //$routes->get('users/edit/(:num)', 'AdminController::editUser/$1', ['as' => 'admin.users.edit']);
     //$routes->post('users\delete/(:num)', 'AdminController::deleteUser/$1', ['as' => 'admin.users.delete']);
-    $routes->get('users\get\(:num)', 'AdminController::getUser/$1', ['as' => 'admin.users.get']);
+    //$routes->get('users/get/(:num)', 'AdminController::getUser/$1', ['as' => 'admin.users.get']);
    $routes->post('get-users', 'AdminController::getUser', ['as' => 'admin.users.get']);
    $routes->post('admin/users/update', 'AdminController::updateUser', ['as' => 'admin.users.update']);
 
@@ -61,6 +91,15 @@ $routes->group('roles', function ($routes) {
     $routes->get('edit/(:num)', 'RolesController::edit/$1', ['as' => 'admin.roles.edit']);
     $routes->post('edit/(:num)', 'RolesController::update/$1');
     $routes->get('delete/(:num)', 'RolesController::delete/$1', ['as' => 'admin.roles.delete']);
+
+
+    $routes->get('/userroles', 'UserRoleController::index');
+$routes->get('/userroles/create', 'UserRoleController::create');
+$routes->post('/userroles/store', 'UserRoleController::store');
+$routes->get('/userroles/edit/(:num)', 'UserRoleController::edit/$1');
+$routes->post('/userroles/update/(:num)', 'UserRoleController::update/$1');
+$routes->get('/userroles/delete/(:num)', 'UserRoleController::delete/$1');
+
 });
 
 $routes->group('',['filter'=>'cifilter:guest'],static function($routes){
@@ -73,3 +112,7 @@ $routes->group('',['filter'=>'cifilter:guest'],static function($routes){
 });
 
 });
+if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
+    require SYSTEMPATH . 'Config/Routes.php';
+}
+

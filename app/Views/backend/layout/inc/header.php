@@ -102,11 +102,11 @@
             </div>
             <div class="user-info-dropdown">
                 <div class="dropdown">
-                    <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                        <span class="user-icon">
-                            <img src="<?= esc($user['profile_photo'] ?? '/backend/vendors/images/default-photo.jpg') ?>" alt="" />
-                        </span>
-                        <span class="user-name"><?= esc($full_name) ?></span>
+                    <a class="dropdown-toggle mr-5" href="#" role="button" data-toggle="dropdown">
+                        <!--<span class="user-icon">
+                            <img src="<? //esc($user['profile_photo'] ?? '/backend/vendors/images/default-photo.jpg') ?>" alt="" />
+                        </span>-->
+                        <span class="user-name mr-1"><?= esc($full_name) ?></span>
                     </a>
 
 
