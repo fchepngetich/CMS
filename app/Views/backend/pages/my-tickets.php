@@ -45,7 +45,7 @@
                                 <?php
                                 $replyClass = ($reply['user_id'] == $ticket['user_id']) ? 'ticket-creator-reply' : 'other-reply';
                                 ?>
-                                <div class="reply rounded shadow p-3 mb-3 <?= $replyClass ?>">
+                                <div class="reply row rounded shadow p-3 mb-3 <?= $replyClass ?>">
                                     <p>posted by: <?= esc($userModel->getFullNameById($reply['user_id'])) ?></p>
                                     <p><?= esc($reply['description']) ?></p>
                                     <p class="text-muted"><small><?= date('M d, Y - h:i A', strtotime($reply['created_at'])) ?></small>
@@ -58,46 +58,75 @@
                     </div>
                     <?php if (\App\Libraries\CIAuth::role() !== 'default'): ?>
                         <?php if ($ticket['status']!=='closed'): ?>
-
-                        <form method="POST" action="<?= route_to('post-reply') ?>" class="replyForm mt-3"
-                            id="form<?= $ticket['id'] ?>">
-                            <input type="hidden" name="ticket_id" value="<?= esc($ticket['id']) ?>">
-                            <div class="form-group">
-                                <label for="reply_content<?= $ticket['id'] ?>">Enter your reply</label>
-                                <textarea class="form-control" required name="reply_content" id="reply_content<?= $ticket['id'] ?>"
-                                    rows="3" placeholder="Type your reply here"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Reply</button>
-                        </form>
+                            <form method="POST" action="<?= route_to('post-reply') ?>" class="replyForm mt-3"
+                                id="form<?= $ticket['id'] ?>">
+                                <input type="hidden" name="ticket_id" value="<?= esc($ticket['id']) ?>">
+                                <div class="form-group">
+                                    <label for="reply_content<?= $ticket['id'] ?>">Enter your reply</label>
+                                    <textarea class="form-control" required name="reply_content" id="reply_content<?= $ticket['id'] ?>"
+                                        rows="3" placeholder="Type your reply here"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit Reply</button>
+                            </form>
+                        <?php endif; ?>
                     <?php endif; ?>
-                    <?php endif; ?>
 
+                    <a href="#" class="read-less-link" data-ticket-id="<?= $ticket['id'] ?>">Read Less</a>
                 </div>
-                <a href="#" class="read-more-link mt-5" data-ticket-id="<?= $ticket['id'] ?>">Read More</a>
+                <a href="#" class="read-more-link" data-ticket-id="<?= $ticket['id'] ?>">Read More</a>
             </div>
         </div>
 
         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.read-more-link').forEach(link => {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const ticketId = this.getAttribute('data-ticket-id');
+                        const fullContent = document.getElementById(`fullContent${ticketId}`);
+                        const ticketDescription = document.getElementById(`ticketDescription${ticketId}`);
+                        if (fullContent.style.display === 'none') {
+                            fullContent.style.display = 'block';
+                            ticketDescription.style.display = 'none';
+                            this.style.display = 'none';
+                        }
+                    });
+                });
 
+                document.querySelectorAll('.read-less-link').forEach(link => {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const ticketId = this.getAttribute('data-ticket-id');
+                        const fullContent = document.getElementById(`fullContent${ticketId}`);
+                        const ticketDescription = document.getElementById(`ticketDescription${ticketId}`);
+                        if (fullContent.style.display === 'block') {
+                            fullContent.style.display = 'none';
+                            ticketDescription.style.display = 'block';
+                            document.querySelector(`.read-more-link[data-ticket-id="${ticketId}"]`).style.display = 'block';
+                        }
+                    });
+                });
 
-            document.querySelector('.replyForm#form<?= $ticket['id'] ?>').addEventListener('su bmit', function(event) {
-                event.preventDefault();
-                const formData = new FormData(this);
-                const ticketId = formData.get('ticket_id');
-                const replyContent = formData.get('reply_content');
-                const replyClass = (loggedInUserId == ticketUserId_<?= $ticket['id'] ?>) ? 'ticket-creator-reply' : 'other-reply';
+                document.querySelectorAll('.replyForm').forEach(form => {
+                    form.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        const formData = new FormData(this);
+                        const ticketId = formData.get('ticket_id');
+                        const replyContent = formData.get('reply_content');
+                        const replyClass = (loggedInUserId == ticketUserId) ? 'ticket-creator-reply' : 'other-reply';
 
-                const replyHTML = `
-                                <div class="reply mb-3 ${replyClass}">
-                                    <p><b>User ID:</b> ${loggedInUserId}</p>
-                                    <p>${replyContent}</p>
-                                    <p class="text-muted"><small>Just now</small></p>
-                                </div>
-                            `;
+                        const replyHTML = `
+                            <div class="reply row rounded shadow p-3 mb-3 ${replyClass}">
+                                <p><b>User ID:</b> ${loggedInUserId}</p>
+                                <p>${replyContent}</p>
+                                <p class="text-muted"><small>Just now</small></p>
+                            </div>
+                        `;
 
-                document.getElementById('replies<?= $ticket['id'] ?>').insertAdjacentHTML('beforeend', replyHTML);
-
-                this.reset();
+                        document.getElementById('replies' + ticketId).insertAdjacentHTML('beforeend', replyHTML);
+                        this.reset();
+                    });
+                });
             });
         </script>
     <?php endforeach; ?>
@@ -110,26 +139,4 @@
 <?php endif; ?>
 
 
-<?= $this->section('stylesheets') ?>
-<style>
-    .ticket-creator-reply {
-        text-align: left;
-        background-color: #e1ffc7;
-        margin: 10px;
-        border-radius: 10px;
-        padding: 10px;
-        max-width: 60%;
-    }
-
-    .other-reply {
-        text-align: right;
-        background-color: #fff;
-        margin: 10px;
-        border-radius: 10px;
-        padding: 10px;
-        max-width: 60%;
-        float: right;
-    }
-</style>
-<?= $this->endSection() ?>
 <?= $this->endSection() ?>
