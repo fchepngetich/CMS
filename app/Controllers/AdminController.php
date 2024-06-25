@@ -116,6 +116,7 @@ class AdminController extends BaseController
         $data['tickets'] = $ticketModel->findAll(); 
         return view('backend/pages/home', $data); 
     }
+    
     public function getUsers(){
         $db = \Config\Database::connect();
         $full_name = CIAuth::fullName();
@@ -434,4 +435,44 @@ public function deleteUser($id)
         return view('backend/pages/home', ['user' => $user]);
     }
         
-}
+  
+        public function edit() {
+            $userId = $this->request->getGet('id');
+            $userModel = new User();
+            $user = $userModel->find($userId);
+    
+            if ($user) {
+                return $this->response->setJSON(['status' => 1, 'data' => $user]);
+            } else {
+                return $this->response->setJSON(['status' => 0, 'msg' => 'User not found.']);
+            }
+        }
+    
+        public function update() {
+            $userModel = new User();
+            $userId = $this->request->getPost('user_id');
+    
+            $data = [
+                'full_name' => $this->request->getPost('full_name'),
+                'email' => $this->request->getPost('email'),
+                'role' => $this->request->getPost('role'),
+            ];
+    
+            if ($userModel->update($userId, $data)) {
+                return $this->response->setJSON(['status' => 1, 'msg' => 'User updated successfully.']);
+            } else {
+                return $this->response->setJSON(['status' => 0, 'msg' => 'Failed to update user.']);
+            }
+        }
+        public function delete() {
+            $userId = $this->request->getPost('id');
+            $userModel = new User();
+    
+            if ($userModel->delete($userId)) {
+                return $this->response->setJSON(['status' => 1, 'msg' => 'User deleted successfully.']);
+            } else {
+                return $this->response->setJSON(['status' => 0, 'msg' => 'Failed to delete user.']);
+            }
+        }
+    }
+    

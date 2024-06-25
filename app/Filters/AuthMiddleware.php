@@ -28,11 +28,9 @@ class AuthMiddleware implements FilterInterface
         $session = session();
 
         if (!$session->has('logged_in')) {
-            // Redirect to login page if user is not logged in
             return redirect()->to('/login');
         }
 
-        // Fetch the full name of the logged-in user
         if ($session->has('userdata')) {
             $fullName = $session->get('userdata')['full_name'];
             $session->set('full_name', $fullName);

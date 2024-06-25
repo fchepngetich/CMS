@@ -26,19 +26,13 @@ $routes->get('/userroles/delete/(:num)', 'UserRoleController::delete/$1');
 $routes->post('/tickets/close/(:num)', 'TicketController::closeTicket/$1');
 $routes->post('/tickets/reopen/(:num)', 'TicketController::reopenTicket/$1');
 
-
-
-
-
 use CodeIgniter\Router\RouteCollection;
 
 /**
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-
 $routes->group('admin',static function($routes){
-
 $routes->group('',['filter'=>'cifilter:auth'],static function($routes){
     //$routes->view('example-page','example-page');
     $routes->get('home','AdminController::index',['as'=>'admin.home']);
@@ -65,7 +59,11 @@ $routes->group('',['filter'=>'cifilter:auth'],static function($routes){
     //$routes->post('users\delete/(:num)', 'AdminController::deleteUser/$1', ['as' => 'admin.users.delete']);
     //$routes->get('users/get/(:num)', 'AdminController::getUser/$1', ['as' => 'admin.users.get']);
    $routes->post('get-users', 'AdminController::getUser', ['as' => 'admin.users.get']);
-   $routes->post('admin/users/update', 'AdminController::updateUser', ['as' => 'admin.users.update']);
+   $routes->get('user/edit', 'AdminController::edit', ['as' => 'user.edit']);
+   $routes->post('user/update', 'AdminController::update', ['as' => 'user.update']);
+   $routes->post('user/delete', 'AdminController::delete', ['as' => 'user.delete']);
+
+
 
 
 
@@ -93,7 +91,7 @@ $routes->group('roles', function ($routes) {
     $routes->get('delete/(:num)', 'RolesController::delete/$1', ['as' => 'admin.roles.delete']);
 
 
-    $routes->get('/userroles', 'UserRoleController::index');
+$routes->get('/userroles', 'UserRoleController::index');
 $routes->get('/userroles/create', 'UserRoleController::create');
 $routes->post('/userroles/store', 'UserRoleController::store');
 $routes->get('/userroles/edit/(:num)', 'UserRoleController::edit/$1');

@@ -10,7 +10,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-8">
-                        <p class="card-text text-muted">
+                        <p class="card-text text-muted mb-2">
                             <span>Status:</span>
                             <?= esc($ticket['status']) ?> |
                             <span>Date:</span>
@@ -18,17 +18,9 @@
                             <span>Replies:</span>
                             <?= count(array_filter($replies, fn($reply) => $reply['ticket_id'] === $ticket['id'])) ?>
                         </p>
-                    </div>
-                    <?php if (\App\Libraries\CIAuth::role() !== 'default'): ?>
-                        <div class="col-md-4">
-                            <form method="post" action="">
-                                <input type="hidden" name="closeticket" value="<?= esc($ticket['id']) ?>">
-                                <button type="button" class="btn btn-info"
-                                    onclick="submitForm('closeForm<?= $ticket['id'] ?>')">Close Ticket</button>
-                            </form>
-                        </div>
-                    <?php endif; ?>
+                    </div>  
                 </div>
+                
                 <p class="ticket-description" id="ticketDescription<?= $ticket['id'] ?>">
                     <?= esc($ticket['description']) ?>
                 </p>
@@ -58,25 +50,30 @@
                     </div>
                     <?php if (\App\Libraries\CIAuth::role() !== 'default'): ?>
                         <?php if ($ticket['status']!=='closed'): ?>
-                            <form method="POST" action="<?= route_to('post-reply') ?>" class="replyForm mt-3"
-                                id="form<?= $ticket['id'] ?>">
-                                <input type="hidden" name="ticket_id" value="<?= esc($ticket['id']) ?>">
-                                <div class="form-group">
-                                    <label for="reply_content<?= $ticket['id'] ?>">Enter your reply</label>
-                                    <textarea class="form-control" required name="reply_content" id="reply_content<?= $ticket['id'] ?>"
-                                        rows="3" placeholder="Type your reply here"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit Reply</button>
-                            </form>
+                    <form method="POST" action="<?= route_to('post-reply') ?>" class="replyForm mt-3" id="form<?= $ticket['id'] ?>">
+                        <input type="hidden" name="ticket_id" value="<?= esc($ticket['id']) ?>">
+                        <div class="form-group">
+                    <label for="reply_content<?= $ticket['id'] ?>">Enter your reply</label>
+                <textarea class="form-control" required name="reply_content" id="reply_content<?= $ticket['id'] ?>" rows="3" placeholder="Type your reply here"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Reply</button>
+                    </form>
                         <?php endif; ?>
                     <?php endif; ?>
+                            <div class="row">
+                                <div class="col-md-2">
+                                <a href="#" class="read-less-link" data-ticket-id="<?= $ticket['id'] ?>">Read Less</a>
 
-                    <a href="#" class="read-less-link" data-ticket-id="<?= $ticket['id'] ?>">Read Less</a>
+                                </div>
+                            </div>
                 </div>
-                <a href="#" class="read-more-link" data-ticket-id="<?= $ticket['id'] ?>">Read More</a>
+                <div class="row">
+                                <div class="col-md-2">
+                                <a href="#" class="read-more-link" data-ticket-id="<?= $ticket['id'] ?>">Read More</a>
+                                </div>
+                            </div>
             </div>
         </div>
-
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.read-more-link').forEach(link => {
@@ -92,6 +89,8 @@
                         }
                     });
                 });
+
+            
 
                 document.querySelectorAll('.read-less-link').forEach(link => {
                     link.addEventListener('click', function(event) {

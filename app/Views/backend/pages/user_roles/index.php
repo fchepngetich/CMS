@@ -19,13 +19,14 @@
                 </nav>
             </div>
             <div class="col-md-6 col-sm-12 text-right">
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#user-modal">
-                    <a href="/userroles/create">Add New Role</a>
+                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#user-modal">
+                    <a href="/userroles/create">Add Role</a>
                 </button>
             </div>
         </div>
     </div>
-    <table class="table table-bordered">
+    <table class="table table-sm table-hover table-striped table-borderless" id="roles-table">
+
         <thead>
             <tr>
                 <th>#</th>
@@ -39,9 +40,10 @@
                     <td><?= $count++; ?></td>
                     <td><?= $role['name'] ?></td>
                     <td>
-                        <a href="/userroles/edit/<?= $role['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="/userroles/edit/<?= $role['id'] ?>" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
                         <a href="/userroles/delete/<?= $role['id'] ?>" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Are you sure?')">Delete</a>
+                            onclick="return confirm('Are you sure?')"> <i class="fa fa-trash"></i>
+                            </a>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -19,7 +19,7 @@
             </nav>
         </div>
         <div class="col-md-6 col-sm-12 text-right">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#user-modal">
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#user-modal">
                 Add User
             </button>
         </div>
@@ -48,10 +48,10 @@
                             <td><?= $user['email'] ?></td>
                             <td><?= $user['role'] ?></td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning edit-user-btn" data-id="<?= $user['id'] ?>">
+                                <button type="button" class="btn btn-sm btn-warning edit-user-btn btn-sm" data-id="<?= $user['id'] ?>">
                                     <i class="fa fa-edit"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="deleteUser(<?= $user['id'] ?>)">
+                                <button type="button" class="btn btn-sm btn-danger delete-user-btn" data-id="<?= $user['id'] ?>">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </td>
@@ -74,7 +74,15 @@
 
 <?= $this->endSection() ?>
 
+<?= $this->section('stylesheets') ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+
+<?= $this->endSection() ?>
+
 <?= $this->section('scripts') ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
+
 <script>
 
 $(document).ready(function() {
@@ -129,32 +137,24 @@ $(document).ready(function() {
     });
 });
 
-
 $(document).ready(function() {
+    // Handle edit button click
     $('.edit-user-btn').on('click', function() {
         var userId = $(this).data('id');
-        
         $.ajax({
-            url: '<?= route_to('admin.users.get') ?>/' + userId,
+            url: '<?= route_to('user.edit') ?>',
             method: 'GET',
+            data: { id: userId },
             dataType: 'json',
             success: function(response) {
                 if (response.status === 1) {
-                    var user = response.user;
-                    $('#edit_user_id').val(user.id);
-                    $('#edit_full_name').val(user.full_name);
-                    $('#edit_email').val(user.email);
-
-                    var roleOptions = '';
-                    $.each(response.roles, function(index, role) {
-                        var selected = (role.id == user.role_id) ? 'selected' : '';
-                        roleOptions += '<option value="' + role.id + '" ' + selected + '>' + role.name + '</option>';
-                    });
-                    $('#edit_role').html(roleOptions);
-
+                    $('#edit-user-id').val(response.data.id);
+                    $('#edit-full-name').val(response.data.full_name);
+                    $('#edit-email').val(response.data.email);
+                    $('#edit-role').val(response.data.role);
                     $('#edit-user-modal').modal('show');
                 } else {
-                    toastr.error(response.msg);
+                    toastr.error('Failed to fetch user data.');
                 }
             },
             error: function(xhr, status, error) {
@@ -164,18 +164,20 @@ $(document).ready(function() {
         });
     });
 
+    // Handle edit user form submission
     $('#edit-user-form').on('submit', function(e) {
         e.preventDefault();
+
         var csrfName = $('.ci_csrf_data').attr('name');
         var csrfHash = $('.ci_csrf_data').val();
         var form = this;
-        var formdata = new FormData(form);
-        formdata.append(csrfName, csrfHash);
-        
+        var formData = new FormData(form);
+        formData.append(csrfName, csrfHash);
+
         $.ajax({
-            url: '<?= route_to('admin.users.update') ?>',
-            method: 'POST',
-            data: formdata,
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: formData,
             processData: false,
             dataType: 'json',
             contentType: false,
@@ -192,7 +194,7 @@ $(document).ready(function() {
                     $(form)[0].reset();
                     $('#edit-user-modal').modal('hide');
                     toastr.success(response.msg);
-                    location.reload();
+                    // Reload your data tables here if needed
                 } else if (response.status === 0) {
                     toastr.error(response.msg);
                 } else {
@@ -213,34 +215,60 @@ $(document).ready(function() {
     });
 });
 
-
-
-
-
-function deleteUser(userId) {
-    if (confirm('Are you sure you want to delete this user?')) {
-        $.ajax({
-            url: '<?= route_to('admin.users.delete') ?>/' + userId,
-            method: 'POST',
-            data: {
-                <?= csrf_token() ?>: '<?= csrf_hash() ?>'
-            },
-            success: function(response) {
-                if (response.status === 1) {
-                    toastr.success(response.msg);
-                    // Optionally reload the table or remove the row
-                    location.reload();
-                } else {
-                    toastr.error(response.msg);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX request failed:", xhr, status, error);
-                toastr.error('An error occurred. Please try again.');
+$(document).ready(function() {
+    // Handle delete button click
+    $('.delete-user-btn').on('click', function() {
+        var userId = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '<?= route_to('user.delete') ?>',
+                    method: 'POST',
+                    data: {
+                        id: userId,
+                        <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.token) {
+                            $('.ci_csrf_data').val(response.token);
+                        }
+                        if (response.status === 1) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.msg,
+                                'success'
+                            )
+                            $('#user-row-' + userId).remove();
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                response.msg,
+                                'error'
+                            )
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed:", xhr, status, error);
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred. Please try again.',
+                            'error'
+                        )
+                    }
+                });
             }
         });
-    }
-}
+    });
+});
 
 </script>
 <?= $this->endSection() ?>

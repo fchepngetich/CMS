@@ -2,8 +2,13 @@
 <?= $this->section('content') ?>
 
 <div class="login-box bg-white box-shadow border-radius-10">
+<div class="brand-logo mx-auto mb-3">
+                <a href="<?php route_to('admin.home') ?>">
+                    <img src="/backend/vendors/images/logo.png" alt="" />
+                </a>
+            </div>
     <div class="login-title">
-        <h2 class="text-center text-primary">Login To Change Management System</h2>
+        <h2 class="text-center">Login To Change Management System</h2>
     </div>
     <?php $validations = Config\Services::validation(); ?>
 

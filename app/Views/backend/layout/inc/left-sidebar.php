@@ -1,6 +1,6 @@
 <div class="left-side-bar">
 	<div class="brand-logo">
-		<a href="index.html">
+		<a href="<?= route_to('admin.home') ?>">
 			<img src="/backend/vendors/images/logo.png" alt="" class="dark-logo" />
 			<img src="/backend/vendors/images/logo.png" alt="" class="light-logo" />
 		</a>
@@ -26,40 +26,14 @@
 						<span class="micon dw dw-home"></span><span class="mtext">My Ticket</span>
 					</a>
 				</li>
+
 				<?php if (\App\Libraries\CIAuth::role() !== 'default'): ?>
-
-				<li class="dropdown">
-					<a href="javascript:;" class="dropdown-toggle">
-						<span class="micon dw dw-newspaper"></span><span class="mtext">Tickets</span>
-					</a>
-					<ul class="submenu">
-
-						<li><a href="<?= base_url('admin/my-tickets') ?>">My Tickets</a></li>
-						<li><a href="<?= base_url('/admin/all-ticket') ?>">All Tickets</a></li>
-						<li><a href="<?= base_url('/admin/tickets/new-ticket') ?>">Add Ticket</a></li>
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon dw dw-newspaper"></span><span class="mtext">Tickets Status</span>
-								</a>
-								<ul class="submenu">
-									<li><a href="<?= route_to('products') ?>">Open</a></li>
-									<li><a href="<?= route_to('add-product') ?>">Closed</a></li>
-									<li><a href="<?= route_to('add-product') ?>">Reopened</a></li>
-
-								</ul>
-							</li>
-							<?php endif; ?>
-
-						</ul>
-						<?php if (\App\Libraries\CIAuth::role() !== 'default'): ?>
-
-
 					<li>
 						<a href="<?= base_url('/admin/get-users') ?>" class="dropdown-toggle no-arrow">
 							<span class="micon dw dw-user"></span><span class="mtext">Users</span>
 						</a>
-
-					<li>
+				</li>
+					
 					<li>
 						<a href="<?= base_url('userroles') ?>" class="dropdown-toggle no-arrow">
 							<span class="micon dw dw-list"></span><span class="mtext">Roles</span>
