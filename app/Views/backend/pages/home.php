@@ -17,10 +17,20 @@
                                 <span>Date:</span>
                                 <?= date('M d, Y - h:i A', strtotime($ticket['created_at'])) ?> |
                                 <span>Replies:</span>
-                                <?= count(array_filter($replies, fn($reply) => $reply['ticket_id'] === $ticket['id'])) ?>
+                                <?= count(array_filter($replies, fn($reply) => $reply['ticket_id'] === $ticket['id'])) ?>|
+                                <?php if (\App\Libraries\CIAuth::role() !== '4'): ?>
+                                    <?php if (!empty($ticket['assigned_to'])): ?>
+                                       Agent: <?=esc( getUsernameById($ticket['assigned_to']) )?>
+                                    <?php else: ?>
+                                      Agent:  Not Assigned
+                                <?php endif; ?>
+                                <?php endif; ?>
+
+
                             </p>
                         </div>
-                        <?php if (\App\Libraries\CIAuth::role() !== 'default'): ?>
+                        <?php if (\App\Libraries\CIAuth::role() !== '2' && \App\Libraries\CIAuth::role() !== '4'): ?>
+ 
                             <div class="col-md-4 mr-auto">
                                 <?php if ($ticket['status'] === 'open'): ?>
                                     <form class="pull-right" id="closeForm<?= $ticket['id'] ?>" method="post"

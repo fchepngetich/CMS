@@ -17,9 +17,7 @@
                         <span aria-hidden="true">&times ;</span>
                     </button>
             </div>
-
             <?php endif;?>
-
             <?php if(!empty(session()->getFlashdata('fail'))) :?>
             <div class="alert alert-danger">
                 <?= session()->getFlashdata('fail');?>

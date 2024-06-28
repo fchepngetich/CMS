@@ -15,5 +15,12 @@ class Tickets extends Model
     {
         return $this->hasMany(Replies::class);
     }
+
+    public function assignTicket($ticketId, $agentId)
+    {
+        return $this->where('id', $ticketId)
+                    ->set(['assigned_to' => $agentId])
+                    ->update();
+    }
        
 }

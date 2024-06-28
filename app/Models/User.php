@@ -10,6 +10,7 @@ class User extends Model
     protected $primaryKey       = 'id';
     protected $allowedFields    = ['full_name','email','password','picture','bio','role'];
 
+
     public function getFullNameById($userId)
     {
         $user = $this->find($userId);

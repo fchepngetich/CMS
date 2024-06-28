@@ -2,17 +2,17 @@
 <?= $this->section('content') ?>
 
 <div class="login-box bg-white box-shadow border-radius-10">
-<div class="brand-logo mx-auto mb-3">
-                <a href="<?php route_to('admin.home') ?>">
-                    <img src="/backend/vendors/images/logo.png" alt="" />
-                </a>
-            </div>
+    <div class="brand-logo mx-auto mb-3">
+        <a href="<?= route_to('admin.home') ?>">
+            <img src="/backend/vendors/images/logo.png" alt="Logo" />
+        </a>
+    </div>
     <div class="login-title">
         <h2 class="text-center">Login To Change Management System</h2>
     </div>
     <?php $validations = Config\Services::validation(); ?>
 
-    <form action="<?= route_to('admin.login.handler')?>" method="POST">
+    <form action="<?= route_to('admin.login.handler') ?>" method="POST">
         <?= csrf_field() ?>
 
         <?php if (!empty(session()->getFlashData('success'))): ?>
@@ -33,40 +33,43 @@
         <?php endif ?>
 
         <div class="input-group custom">
-            <input type="text" class="form-control form-control-lg" placeholder="Email or Full Name" name="login_id"
+            <input type="text" class="form-control form-control-lg" placeholder="Enter Email" name="login_id"
                 value="<?= set_value('login_id') ?>">
             <div class="input-group-append custom">
                 <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
             </div>
         </div>
         <?php if ($validations->getError('login_id')): ?>
-            <div class="d-block text-danger" style="margin-top: -25px margin-bottom:15px;">
-                <?= $validation->getError('login_id') ?>
-
+            <div class="d-block text-danger" style="margin-top: -25px; margin-bottom: 15px;">
+                <?= $validations->getError('login_id') ?>
             </div>
         <?php endif; ?>
+
         <div class="input-group custom">
-            <input type="password" class="form-control form-control-lg" placeholder="**********" name="password" value="<?=set_value('password') ?>">
+            <input type="password" id="password" class="form-control form-control-lg" placeholder="**********" name="password" value="<?= set_value('password') ?>">
             <div class="input-group-append custom">
                 <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
             </div>
         </div>
         <?php if ($validations->getError('password')): ?>
-            <div class="d-block text-danger" style="margin-top: -25px margin-bottom:15px;">
+            <div class="d-block text-danger" style="margin-top: -25px; margin-bottom: 15px;">
                 <?= $validations->getError('password') ?>
-
             </div>
         <?php endif; ?>
+
+       
+
         <div class="row pb-30">
-            <div class="col-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="customCheck1">
-                    <label class="custom-control-label" for="customCheck1">Remember</label>
-                </div>
-            </div>
-            <div class="col-6">
+        <div class="col-md-6">
+        <div class="form-group">
+            <input type="checkbox" id="show_password" onclick="togglePasswordVisibility()"> 
+            <label for="show_password">Show Password</label>
+        </div>
+        </div>
+
+            <div class="col-md-6">
                 <div class="forgot-password">
-                    <a href="<?= route_to('admin.forgot.form')?>">Forgot Password</a>
+                    <a href="<?= route_to('admin.forgot.form') ?>">Forgot Password</a>
                 </div>
             </div>
         </div>
@@ -75,9 +78,22 @@
                 <div class="input-group mb-0">
                     <input class="btn btn-primary btn-lg btn-block" type="submit" value="Sign In">
                 </div>
-
             </div>
         </div>
     </form>
 </div>
+
+<script>
+    function togglePasswordVisibility() {
+        var passwordField = document.getElementById('password');
+        var showPassword = document.getElementById('show_password');
+
+        if (showPassword.checked) {
+            passwordField.type = 'text';
+        } else {
+            passwordField.type = 'password';
+        }
+    }
+</script>
+
 <?= $this->endSection() ?>

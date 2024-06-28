@@ -17,23 +17,30 @@
 					</a>
 				</li>
 				<li>
-					<a href="<?= base_url('/admin/tickets/new-ticket') ?>" class="dropdown-toggle no-arrow">
-						<span class="micon dw dw-home"></span><span class="mtext">Add Ticket</span>
-					</a>
-				</li>
-				<li>
-					<a href="<?= base_url('/admin/tickets/my-tickets') ?>" class="dropdown-toggle no-arrow">
-						<span class="micon dw dw-home"></span><span class="mtext">My Ticket</span>
-					</a>
-				</li>
+    <a href="<?= base_url('/admin/tickets/new-ticket') ?>" class="dropdown-toggle no-arrow">
+        <span class="micon dw dw-add"></span><span class="mtext">Add Ticket</span>
+    </a>
+</li>
+<li>
+    <a href="<?= base_url('/admin/tickets/my-tickets') ?>" class="dropdown-toggle no-arrow">
+        <span class="micon dw dw-ticket"></span><span class="mtext">My Tickets</span>
+    </a>
+</li>
+<?php if (\App\Libraries\CIAuth::role() !== '2' && \App\Libraries\CIAuth::role() !== '4'): ?>
+	<li>
+						<a href="<?= base_url('/admin/tickets/assign') ?>" class="dropdown-toggle no-arrow">
+							<span class="micon dw dw-user"></span><span class="mtext">Asign Agent</span>
+						</a>
+					</li>
+					<?php endif; ?>
+					<?php if ( \App\Libraries\CIAuth::role() !== '4'): ?>
 
-				<?php if (\App\Libraries\CIAuth::role() !== 'default'): ?>
 					<li>
 						<a href="<?= base_url('/admin/get-users') ?>" class="dropdown-toggle no-arrow">
 							<span class="micon dw dw-user"></span><span class="mtext">Users</span>
 						</a>
-				</li>
-					
+					</li>
+
 					<li>
 						<a href="<?= base_url('userroles') ?>" class="dropdown-toggle no-arrow">
 							<span class="micon dw dw-list"></span><span class="mtext">Roles</span>
@@ -42,27 +49,19 @@
 					<li>
 					<?php endif; ?>
 
-
-
 					<div class="dropdown-divider"></div>
 				</li>
 				<li>
 					<div class="sidebar-small-cap">Settings</div>
 				</li>
 				<li>
-					<a href="" target="_blank" class="dropdown-toggle no-arrow">
+					<a href="<?= base_url('/admin/profile') ?>" class="dropdown-toggle no-arrow">
 						<span class="micon dw dw-user"></span>
 						<span class="mtext">Profile
 						</span>
 					</a>
 				</li>
-				<li>
-					<a href="" target="_blank" class="dropdown-toggle no-arrow">
-						<span class="micon dw dw-settings"></span>
-						<span class="mtext">General
-						</span>
-					</a>
-				</li>
+
 			</ul>
 		</div>
 	</div>

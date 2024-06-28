@@ -10,4 +10,10 @@ class Roles extends Model
     protected $primaryKey       = 'id';
     protected $allowedFields    = ['name'];
 
+    public function   getRoleNameById($roleId)
+    {
+        $name='Faith';
+        return $name;
+    }
+
 }

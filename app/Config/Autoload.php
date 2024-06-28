@@ -20,8 +20,13 @@ use CodeIgniter\Config\AutoloadConfig;
  *
  * @immutable
  */
+// Autoloaded files and directories configuration
+
+
 class Autoload extends AutoloadConfig
 {
+    
+
     /**
      * -------------------------------------------------------------------
      * Namespaces
@@ -90,5 +95,11 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = [];
+    public $helpers = [
+
+         'RoleHelper' 
+
+    ];
+
+
 }

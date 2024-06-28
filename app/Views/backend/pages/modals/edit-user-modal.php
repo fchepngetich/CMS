@@ -3,6 +3,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form id="edit-user-form" action="<?= route_to('user.update') ?>" method="post">
+            <?= csrf_field() ?>
+
+                <input type="hidden" name="<?= csrf_token() ?>" class="ci_csrf_data" value="<?= csrf_hash() ?>" />
                 <div class="modal-header">
                     <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -23,9 +26,8 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-role">Role</label>
-                        <select class="form-control" id="edit-role" name="role" required>
-                            <option value="Admin">Admin</option>
-                            <option value="User">User</option>
+                        <select class="form-control" id="edit-role" name="role_id" required>
+                            <!-- Options will be populated by JavaScript -->
                         </select>
                         <span class="error-text role_error"></span>
                     </div>

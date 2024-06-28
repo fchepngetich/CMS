@@ -30,41 +30,53 @@
     <div class="col-md-12">
         <div class="card card-box">
             <div class="card-body">
-                <table class="table table-sm table-hover table-striped table-borderless" id="users-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Full Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $count = 1; foreach ($users as $user): ?>
-                        <tr>
-                            <td><?= $count++ ?></td>
-                            <td><?= $user['full_name'] ?></td>
-                            <td><?= $user['email'] ?></td>
-                            <td><?= $user['role'] ?></td>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-warning edit-user-btn btn-sm" data-id="<?= $user['id'] ?>">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-danger delete-user-btn" data-id="<?= $user['id'] ?>">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>                    
-                    </tbody>
-                </table>
+            <table class="table table-sm table-hover table-striped table-borderless" id="users-table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Full Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php $count = 1; foreach ($users as $user): ?>
+        <tr>
+            <td><?= $count++ ?></td>
+            <td><?= $user['full_name'] ?></td>
+            <td><?= $user['email'] ?></td>
+            <td>
+                <?php
+                // Assuming $user['role'] contains the role ID
+                $roleId = $user['role'];
+                // Find the role name corresponding to the role ID
+                $roleName = '';
+                foreach ($roles as $role) {
+                    if ($role['id'] == $roleId) {
+                        $roleName = $role['name'];
+                        break;
+                    }
+                }
+                echo htmlspecialchars($roleName); // Output the role name
+                ?>
+            </td>            <td>
+                <button type="button" class="btn btn-sm btn-warning edit-user-btn btn-sm" data-id="<?= $user['id'] ?>">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-danger delete-user-btn" data-id="<?= $user['id'] ?>">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+        <?php endforeach; ?>                    
+    </tbody>
+</table>
+
             </div>
         </div>
     </div>
 </div>
-
-
 
 <!-- Add User Modal -->
 <?php include 'modals/create-user-modal.php'?>
@@ -138,7 +150,6 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-    // Handle edit button click
     $('.edit-user-btn').on('click', function() {
         var userId = $(this).data('id');
         $.ajax({
@@ -151,7 +162,14 @@ $(document).ready(function() {
                     $('#edit-user-id').val(response.data.id);
                     $('#edit-full-name').val(response.data.full_name);
                     $('#edit-email').val(response.data.email);
-                    $('#edit-role').val(response.data.role);
+                    
+                    var roleSelect = $('#edit-role');
+                    roleSelect.empty();
+                    $.each(response.roles, function(index, role) {
+                        var selected = (role.id === response.data.role) ? 'selected' : '';
+                        roleSelect.append('<option value="' + role.id + '" ' + selected + '>' + role.name + '</option>');
+                    });
+
                     $('#edit-user-modal').modal('show');
                 } else {
                     toastr.error('Failed to fetch user data.');
@@ -164,15 +182,11 @@ $(document).ready(function() {
         });
     });
 
-    // Handle edit user form submission
     $('#edit-user-form').on('submit', function(e) {
         e.preventDefault();
 
-        var csrfName = $('.ci_csrf_data').attr('name');
-        var csrfHash = $('.ci_csrf_data').val();
         var form = this;
         var formData = new FormData(form);
-        formData.append(csrfName, csrfHash);
 
         $.ajax({
             url: $(form).attr('action'),
@@ -188,13 +202,12 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.token) {
-                    $('.ci_csrf_data').val(response.token);
+                    $('input[name="<?= csrf_token() ?>"]').val(response.token); // Update CSRF token
                 }
                 if (response.status === 1) {
                     $(form)[0].reset();
                     $('#edit-user-modal').modal('hide');
                     toastr.success(response.msg);
-                    // Reload your data tables here if needed
                 } else if (response.status === 0) {
                     toastr.error(response.msg);
                 } else {
@@ -216,7 +229,6 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-    // Handle delete button click
     $('.delete-user-btn').on('click', function() {
         var userId = $(this).data('id');
         Swal.fire({
