@@ -12,7 +12,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class RolesController extends BaseController
 
-
 {
     
     protected $roleModel;

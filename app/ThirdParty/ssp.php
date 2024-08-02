@@ -102,7 +102,6 @@ class SSP {
             $dtColumns = SSP::pluck( $columns, 'dt' );
 
             for ( $i=0, $ien=count($request['order']) ; $i<$ien ; $i++ ) {
-                // Convert the column index into the column data property
                 $columnIdx = intval($request['order'][$i]['column']);
                 $requestColumn = $request['columns'][$columnIdx];
 
@@ -162,7 +161,7 @@ class SSP {
             }
         }
 
-        // Individual column filtering
+       
         for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
             $requestColumn = $request['columns'][$i];
             $columnIdx = array_search( $requestColumn['data'], $dtColumns );
@@ -177,7 +176,6 @@ class SSP {
             }
         }
 
-        // Combine the filters into a single string
         $where = '';
 
         if ( count( $globalSearch ) ) {

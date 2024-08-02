@@ -184,7 +184,6 @@ public function searchTicketsInCategories()
 
     $data['tickets'] = $query->findAll();
     
-    // Pass search parameters to the view to maintain the form state
     $data['title'] = $title;
     $data['start_date'] = $startDate;
     $data['end_date'] = $endDate;

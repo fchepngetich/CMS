@@ -28,7 +28,6 @@
                 <th>#</th>
                 <th>Title</th>
                 <th>Date Assigned</th>
-                <th>Status</th>
                 <th>Date Completed</th>
                 <th>Action</th>
             </tr>
@@ -39,19 +38,13 @@
                     <td><?= $count++ ?></td>
                     <td><a href="<?= base_url('admin/tickets/ticket-details/' . $ticket->id) ?>"><?= $ticket->subject ?></a></td>
                     <td><?= date('jS F Y', strtotime($ticket->assigned_at)) ?></td>
-                    <td>
-                        <?php if($ticket->dev_status == 0): ?>
-                            <span class="badge badge-warning"><?= 'Pending' ?></span>
-                        <?php else: ?>
-                            <span class="badge badge-success"><?= 'Completed'?></span>
-                        <?php endif; ?>
-                    </td>
+                 
                     <td><?= !empty($ticket->date_completed) ? date('jS F Y', strtotime($ticket->date_completed)) : '-' ?></td>
                     <td>
-                        <?php if($ticket->dev_status == 0): ?>
-                            <a href="#" class="badge badge-warning close-ticket" data-ticket-id="<?= $ticket->id ?>">Mark Complete</a>
+                        <?php if($ticket->status == 'open'): ?>
+                            <a href="#" class="badge badge-warning close-ticket" data-ticket-id="<?= $ticket->id ?>">Close</a>
                         <?php else: ?>
-                            <span class="badge badge-success">Completed</span>
+                            <span class="badge badge-success">Closed</span>
                         <?php endif; ?>
                     </td>
                 </tr>

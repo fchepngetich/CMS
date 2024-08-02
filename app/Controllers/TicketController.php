@@ -117,7 +117,7 @@ public function addRemarks()
     if ($this->request->getMethod() === 'POST') {
         $ticketId = $this->request->getPost('ticket_id');
         $remarks = $this->request->getPost('remarks');
-        $devStatus = 1;
+        $Status = 'closed';
 
         if (empty($ticketId) || empty($remarks)) {
             return $this->response->setStatusCode(400)->setJSON(['status' => 0, 'msg' => 'Invalid input.']);
@@ -127,10 +127,10 @@ public function addRemarks()
 
         $data = [
             'dev_remarks' => $remarks,
-            'dev_status' => $devStatus,
+            'status' => $Status,
         ];
 
-        if ($devStatus == 1) {
+        if ($Status == 1) {
             $data['date_completed'] = date('Y-m-d H:i:s');
         }
 
@@ -158,7 +158,6 @@ public function reportsTickets()
 
     return view('backend/pages/ticket-reports', $data);
 }
-
 
 
     public function getOpenTicketsByCategory()
