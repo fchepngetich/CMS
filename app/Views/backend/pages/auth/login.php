@@ -3,16 +3,16 @@
 
 <div class="login-box bg-white box-shadow border-radius-10">
     <div class="brand-logo mx-auto mb-3">
-        <a href="<?= route_to('admin.home') ?>">
-            <img src="/backend/vendors/images/logo.png" alt="Logo" />
+        <a href="<?= base_url('admin/home') ?>">
+<img src="/backend/vendors/images/logo.png" alt="Logo" />
         </a>
     </div>
     <div class="login-title">
-        <h2 class="text-center">Login To Change Management System</h2>
+        <h2 class="text-center">Change Management System</h2>
     </div>
     <?php $validations = Config\Services::validation(); ?>
 
-    <form action="<?= route_to('admin.login.handler') ?>" method="POST">
+    <form action="<?= base_url('admin/login') ?>" method="POST">
         <?= csrf_field() ?>
 
         <?php if (!empty(session()->getFlashData('success'))): ?>
@@ -69,7 +69,7 @@
 
             <div class="col-md-6">
                 <div class="forgot-password">
-                    <a href="<?= route_to('admin.forgot.form') ?>">Forgot Password</a>
+                    <a href="<?= base_url('admin/forgot') ?>">Forgot Password</a>
                 </div>
             </div>
         </div>

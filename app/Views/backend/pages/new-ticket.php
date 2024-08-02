@@ -2,52 +2,71 @@
 <?= $this->section('content') ?>
 
 <div class="page-header">
-<div class="row">
-    <div class="col-md-6 col-sm-12">
-        <div class="title">
-            <h4>Add Ticket</h4>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="title">
+                <h4>Add Ticket</h4>
+            </div>
+            <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="<?= base_url('admin/home') ?>">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Add Ticket
+                    </li>
+                </ol>
+            </nav>
         </div>
-        <nav aria-label="breadcrumb" role="navigation">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="<?= route_to('admin.home')?>">Home</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    Add Ticket
-                </li>
-            </ol>
-        </nav>
-    </div>
-    <div class="col-md-6 col-sm-12 text-right">
-        <a href="" class="btn btn-info">View my Tickets</a>
+        <div class="col-md-6 col-sm-12 text-right">
+            <a href="<?= base_url('admin/tickets/my-tickets') ?>" class="btn btn-info">View my Tickets</a>
+        </div>
     </div>
 </div>
-</div>
-<form action="<?= route_to('create-ticket')?>" method="post" autocomplete="off" enctype="multipart/form-data" id="addTicketform">
-    <input type="hidden" name="<?= csrf_token()?>" value="<?= csrf_hash()?>" class="ci_csrf_data">
+<form action="<?= base_url('admin/tickets/create-ticket') ?>" method="post" autocomplete="off" enctype="multipart/form-data" id="addTicketform">
+    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" class="ci_csrf_data">
     <div class="row">
         <div class="col-md-12">
             <div class="card card-box mb-2">
                 <div class="card-body">
-                    <div class="form-group">
-                        <label for=""><b>Ticket Title</b></label>
-                        <input type="text" class="form-control" required placeholder="Enter Ticket Title" name="title" id="">
-                        <span class="text-danger error-text title-error"></span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for=""><b>Category</b></label>
+                                <select name="category_id" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <?php foreach ($categories as $category) : ?>
+                                        <option value="<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <span class="text-danger error-text category_id-error"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for=""><b>Ticket Subject</b></label>
+                                <input type="text" class="form-control" required placeholder="Enter Ticket Subject" name="title" id="">
+                                <span class="text-danger error-text title-error"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="">Description</label>
-                            <textarea name="content" cols="30" rows="10" id="" required class="form-control" placeholder="Type here...."></textarea>
-                            <span class="text-danger error-text content-error"></span>
+                        <textarea name="content" cols="30" rows="10" id="" required class="form-control" placeholder="Type here...."></textarea>
+                        <span class="text-danger error-text content-error"></span>
                     </div>
                 </div>
             </div>
         </div>
-        
     </div>
     <div class="mb-3">
-            <button type="submit" class="btn btn-primary">Add Ticket</button>
-        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Add Ticket</button>
+        <span> <a href="<?= base_url('admin/home') ?>" class="btn btn-primary btn-sm">Cancel</a>
+</span>
+    </div>
 </form>
+
+
 
 
 <?= $this->section('scripts') ?>
@@ -80,6 +99,7 @@
                 if (response.status === 1) {
                     $(form)[0].reset();
                     toastr.success(response.msg);
+                    window.location.href = response.redirect;
                     
                 } else if (response.status === 0) {
                     toastr.error(response.msg);

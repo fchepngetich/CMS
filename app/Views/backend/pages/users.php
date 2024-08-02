@@ -1,3 +1,4 @@
+<div class="container">
 <?= $this->extend('backend/layout/pages-layout') ?>
 <?= $this->section('content') ?>
 
@@ -10,7 +11,7 @@
             <nav aria-label="breadcrumb" role="navigation">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="<?= route_to('admin.home') ?>">Home</a>
+                        <a href="<?= base_url('admin/home') ?>">Home</a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
                         Manage Users
@@ -41,16 +42,14 @@
         </tr>
     </thead>
     <tbody>
-        <?php $count = 1; foreach ($users as $user): ?>
+        <?php $count = 1; $loggedInUserId = \App\Libraries\CIAuth::id(); foreach ($users as $user): ?>
         <tr>
             <td><?= $count++ ?></td>
             <td><?= $user['full_name'] ?></td>
             <td><?= $user['email'] ?></td>
             <td>
                 <?php
-                // Assuming $user['role'] contains the role ID
                 $roleId = $user['role'];
-                // Find the role name corresponding to the role ID
                 $roleName = '';
                 foreach ($roles as $role) {
                     if ($role['id'] == $roleId) {
@@ -58,13 +57,13 @@
                         break;
                     }
                 }
-                echo htmlspecialchars($roleName); // Output the role name
+                echo htmlspecialchars($roleName); 
                 ?>
             </td>            <td>
                 <button type="button" class="btn btn-sm btn-warning edit-user-btn btn-sm" data-id="<?= $user['id'] ?>">
                     <i class="fa fa-edit"></i>
                 </button>
-                <button type="button" class="btn btn-sm btn-danger delete-user-btn" data-id="<?= $user['id'] ?>">
+                <button type="button" class="btn btn-sm btn-danger delete-user-btn" data-id="<?= $user['id'] ?>" <?= $user['id'] == $loggedInUserId ? 'disabled' : '' ?>>
                     <i class="fa fa-trash"></i>
                 </button>
             </td>
@@ -82,7 +81,7 @@
 <?php include 'modals/create-user-modal.php'?>
 <?php include 'modals/edit-user-modal.php'?>
 
-
+</div>
 
 <?= $this->endSection() ?>
 
@@ -128,16 +127,14 @@ $(document).ready(function() {
                     $(form)[0].reset();
                     modal.modal('hide');
                     toastr.success(response.msg);
-                    // Reload  your data tables here if needed
+                    location.reload(); 
                 } else if (response.status === 0) {
-                    toastr.error(response.msg);
-                } else {
                     if (response.errors) {
                         $.each(response.errors, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val);
                         });
                     } else {
-                        toastr.error('An unexpected error occurred.');
+                        toastr.error(response.msg);
                     }
                 }
             },
@@ -149,11 +146,12 @@ $(document).ready(function() {
     });
 });
 
+
 $(document).ready(function() {
     $('.edit-user-btn').on('click', function() {
         var userId = $(this).data('id');
         $.ajax({
-            url: '<?= route_to('user.edit') ?>',
+            url: '<?= base_url('admin/user/edit') ?>',
             method: 'GET',
             data: { id: userId },
             dataType: 'json',
@@ -202,12 +200,13 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.token) {
-                    $('input[name="<?= csrf_token() ?>"]').val(response.token); // Update CSRF token
+                    $('input[name="<?= csrf_token() ?>"]').val(response.token); 
                 }
                 if (response.status === 1) {
                     $(form)[0].reset();
                     $('#edit-user-modal').modal('hide');
                     toastr.success(response.msg);
+                     location.reload(); 
                 } else if (response.status === 0) {
                     toastr.error(response.msg);
                 } else {
@@ -232,7 +231,7 @@ $(document).ready(function() {
     $('.delete-user-btn').on('click', function() {
         var userId = $(this).data('id');
         Swal.fire({
-            title: 'Are you sure?',
+            title: 'Are you sure you want to delete user?',
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
@@ -242,7 +241,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '<?= route_to('user.delete') ?>',
+                    url: '<?= base_url('admin/user/delete') ?>',
                     method: 'POST',
                     data: {
                         id: userId,
@@ -258,7 +257,9 @@ $(document).ready(function() {
                                 'Deleted!',
                                 response.msg,
                                 'success'
-                            )
+                            ).then(() => {
+                                location.reload(); 
+                            });
                             $('#user-row-' + userId).remove();
                         } else {
                             Swal.fire(

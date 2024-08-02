@@ -4,16 +4,11 @@ namespace App\Controllers;
 
 class Home extends BaseController
 {
-    public function indexs(): string
+    public function index()
     {
-        return view('welcome_message');
+         return redirect()->to(base_url('admin/home'));
+
     }
 
-    public function index(){
-        $data=[
-            'products'=>['Laptop','desktop','water dispencer','cctv']
-
-        ];
-        return view('products/products_view',$data);
-    }
+   
 }

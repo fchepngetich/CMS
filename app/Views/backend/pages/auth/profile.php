@@ -2,12 +2,31 @@
 <?= $this->section('content') ?>
 
 <div class="container mb-5">
+    <div class="page-header ">
+<div class="row">
+    <div class="col-md-6 col-sm-12">
+        <div class="title">
+            <h4>My Profile</h4>
+        </div>
+        <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="<?= base_url('admin/home')?>">Home</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    View Profile
+                </li>
+            </ol>
+        </nav>
+    </div>
+   
+</div>
+</div>
+
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="profile-box bg-white box-shadow border-radius-10 p-4">
-                <div class="profile-title mb-4">
-                    <h2 class="text-center">Profile</h2>
-                </div>
+               
                 
                 <div class="profile-content">
                     <div class="row">
@@ -29,7 +48,5 @@
         </div>
     </div>
 </div>
-
-
 
 <?= $this->endSection() ?>

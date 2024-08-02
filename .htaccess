@@ -1,6 +1,10 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /cms/public/
+    
+    # Redirect root URL to admin login
+    RewriteRule ^$ admin/login [L,R=301]
+
 
     # Redirect all requests to index.php
     RewriteCond %{REQUEST_FILENAME} !-f

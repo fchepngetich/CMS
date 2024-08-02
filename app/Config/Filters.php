@@ -73,7 +73,9 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            'csrf' => ['except' => ['userroles/delete/*']],
+            //'csrf' => ['except' => ['userroles/delete/*']],
+            'csrf' => ['except' => ['admin/tickets/get-open-tickets-by-category', 'admin/tickets/assign','admin/tickets/addRemarks']]  
+
 
             // 'honeypot',
             // 'csrf',

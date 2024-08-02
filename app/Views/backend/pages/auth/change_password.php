@@ -1,11 +1,32 @@
 <?= $this->extend('backend/layout/pages-layout') ?>
 <?= $this->section('content') ?>
-
-<div class="login-box bg-white box-shadow border-radius-10">
-    <div class="login-title">
-        <h2 class="text-center">Change Password</h2>
+    <div class="container ">
+          <div class="page-header ">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="title">
+                    <h4>Change Password</h4>
+                </div>
+                 <nav aria-label="breadcrumb" role="navigation">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="<?= base_url('admin/home') ?>">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Change Password
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+           
+        </div>
     </div>
-    <form action="<?= route_to('change_password') ?>" method="POST">
+
+<div class="bg-white box-shadow border-radius-10">
+  
+       <div class="row ">
+         <div class="col-md-6 login-box">
+            <form action="<?= base_url('admin/change-password') ?>" method="POST">
         <?= csrf_field() ?>
         
         <?php if (session()->getFlashdata('success')) : ?>
@@ -60,6 +81,21 @@
             </div>
         </div>
     </form>
+
+    </div>
+         <div class="col-md-6 login-box">
+            <h4>Password Requirements</h4>
+            <ul>
+                <li>At least 8 characters long</li>
+                <li>At least one uppercase letter</li>
+                <li>At least one lowercase letter</li>
+                <li>At least one number</li>
+                <li>At least one special character</li>
+            </ul>
+        </div>
+
+    </div>  
+    </div>
 </div>
 
 <script>

@@ -2,7 +2,7 @@
 <div class="modal fade" id="edit-user-modal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form id="edit-user-form" action="<?= route_to('user.update') ?>" method="post">
+            <form id="edit-user-form" action="<?= base_url('admin/user/update') ?>" method="post">
             <?= csrf_field() ?>
 
                 <input type="hidden" name="<?= csrf_token() ?>" class="ci_csrf_data" value="<?= csrf_hash() ?>" />

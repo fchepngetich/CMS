@@ -1,199 +1,64 @@
 <?= $this->extend('backend/layout/pages-layout') ?>
 <?= $this->section('content') ?>
-
 <div class="container">
-    <?php if (!empty($tickets) && is_array($tickets)): ?>
-        <?php foreach ($tickets as $ticket): ?>
-            <div class="rounded shadow card mb-5">
-                <h5 class="card-header">
-                    <?= esc($ticket['subject']) ?>
-                </h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <p class="card-text text-muted mb-2">
-                                <span>Status:</span>
-                                <?= esc($ticket['status']) ?> |
-                                <span>Date:</span>
-                                <?= date('M d, Y - h:i A', strtotime($ticket['created_at'])) ?> |
-                                <span>Replies:</span>
-                                <?= count(array_filter($replies, fn($reply) => $reply['ticket_id'] === $ticket['id'])) ?>|
-                                <?php if (\App\Libraries\CIAuth::role() !== '4'): ?>
-                                    <?php if (!empty($ticket['assigned_to'])): ?>
-                                       Agent: <?=esc( getUsernameById($ticket['assigned_to']) )?>
-                                    <?php else: ?>
-                                      Agent:  Not Assigned
-                                <?php endif; ?>
-                                <?php endif; ?>
+    <div class="page-header ">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="title">
+                    <h4>Categories</h4>
+                </div>
+                 <nav aria-label="breadcrumb" role="navigation">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="<?= base_url('admin/home') ?>">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Categories
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+           
+        </div>
+    </div>
 
-
-                            </p>
-                        </div>
-                        <?php if (\App\Libraries\CIAuth::role() !== '2' && \App\Libraries\CIAuth::role() !== '4'): ?>
- 
-                            <div class="col-md-4 mr-auto">
-                                <?php if ($ticket['status'] === 'open'): ?>
-                                    <form class="pull-right" id="closeForm<?= $ticket['id'] ?>" method="post"
-                                        action="<?= base_url('/tickets/close/' . $ticket['id']) ?>">
-                                        <?= csrf_field() ?>
-                                        <input type="hidden" name="closeticket" value="<?= esc($ticket['id']) ?>">
-                                        <button type="button" class="btn btn-info btn-sm"
-                                            onclick="submitForm('closeForm<?= $ticket['id'] ?>')">Close Ticket</button>
-                                    </form>
-                                <?php else: ?>
-                                    <form class="pull-right" id="reopenForm<?= $ticket['id'] ?>" method="post"
-                                        action="<?= base_url('/tickets/reopen/' . $ticket['id']) ?>">
-                                        <?= csrf_field() ?>
-                                        <input type="hidden" name="reopenticket" value="<?= esc($ticket['id']) ?>">
-                                        <button type="button" class="btn btn-warning btn-sm"
-                                            onclick="submitForm('reopenForm<?= $ticket['id'] ?>')">Reopen Ticket</button>
-                                    </form>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <p class="ticket-description" id="ticketDescription<?= $ticket['id'] ?>">
-                        <?= esc($ticket['description']) ?>
-                    </p>
-                    <div class="full-content" id="fullContent<?= $ticket['id'] ?>" style="display: none;">
-                        <p class="full-description">
-                            <?= esc($ticket['description']) ?>
-                        </p>
-                        <div class="replies" id="replies<?= $ticket['id'] ?>">
-                            <?php
-                            $ticketReplies = array_filter($replies, fn($reply) => $reply['ticket_id'] === $ticket['id']);
-                            if (!empty($ticketReplies) && is_array($ticketReplies)): ?>
-                                <?php foreach ($ticketReplies as $reply): ?>
-                                    <?php
-                                    $replyClass = ($reply['user_id'] == $ticket['user_id']) ? 'ticket-creator-reply' : 'other-reply';
-                                    ?>
-                                    <div class="reply rounded shadow p-3 mb-3 <?= $replyClass ?>">
-                                        <p>posted by: <?= esc($userModel->getFullNameById($reply['user_id'])) ?></p>
-                                        <p><?= esc($reply['description']) ?></p>
-                                        <p class="text-muted">
-                                            <small><?= date('M d, Y - h:i A', strtotime($reply['created_at'])) ?></small></p>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p>No replies for this ticket.</p>
-                            <?php endif; ?>
-                        </div>
-                        <?php if ($ticket['status'] !== 'closed'): ?>
-                            <form method="POST" action="<?= route_to('post-reply') ?>" class="replyForm mt-3">
-                            <input type="hidden" name="<?= csrf_token()?>" value="<?= csrf_hash()?>" class="ci_csrf_data">
-                                <input type="hidden" name="ticket_id" value="<?= esc($ticket['id']) ?>">
-                                <div class="form-group">
-                                    <label for="reply_content<?= $ticket['id'] ?>">Enter your reply</label>
-                                    <textarea class="form-control" required name="reply_content"
-                                        id="reply_content<?= $ticket['id'] ?>" rows="3"
-                                        placeholder="Type your reply here"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit Reply</button>
-                            </form>
-                        <?php endif ?>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <a href="#" class="read-less-link btn-sm mt-2" data-ticket-id="<?= $ticket['id'] ?>">Read
-                                    Less</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <a href="#" class="read-more-link btn-sm" data-ticket-id="<?= $ticket['id'] ?>">Read More</a>
-                        </div>
+    <div class="row">
+        <?php foreach ($categories as $category) : ?>
+            <div class="col-md-3">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                    <a href="<?= base_url('admin/categories/tickets/' . $category['id']) ?>">
+                        <h5 class="card-title"><?= htmlspecialchars($category['name']) ?></h5> </a>
+                        <p class="card-text"><small class="text-muted">Total Tickets: <?= htmlspecialchars($category['total_tickets']) ?></small></p>
+                        <p class="card-text"><small class="text-muted">Pending Tickets: <?= htmlspecialchars($category['pending_tickets']) ?></small></p>
+                        <p class="card-text"><small class="text-muted">Closed Tickets: <?= htmlspecialchars($category['closed_tickets']) ?></small></p>
+                        
+                       
                     </div>
                 </div>
             </div>
         <?php endforeach; ?>
-    <?php else: ?>
-        <p>No tickets found.</p>
-    <?php endif; ?>
+    </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('stylesheets') ?>
+<link rel="stylesheet" href="<?= base_url('public/backend/src/plugins/datatables/css/dataTables.bootstrap4.min.css') ?>">
+<link rel="stylesheet" href="<?= base_url('public/backend/src/plugins/datatables/css/responsive.bootstrap4.min.css') ?>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="<?= base_url('public/extra-assets/jquery-ui-1.13.3/jquery-ui.min.css') ?>">
+<link rel="stylesheet" href="<?= base_url('public/extra-assets/jquery-ui-1.13.3/jquery-ui.structure.min.css') ?>">
+<link rel="stylesheet" href="<?= base_url('public/extra-assets/jquery-ui-1.13.3/jquery-ui.theme.min.css') ?>">
+
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="<?= base_url('public/extra-assets/jquery-ui-1.13.3/jquery-ui.min.js') ?> "></script>
 <script>
-    function submitForm(formId) {
-        document.getElementById(formId).submit();
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.read-more-link').forEach(link => {
-            link.addEventListener('click', function (event) {
-                event.preventDefault();
-                const ticketId = this.getAttribute('data-ticket-id');
-                const fullContent = document.getElementById('fullContent' + ticketId);
-                const ticketDescription = document.getElementById('ticketDescription' + ticketId);
-
-                if (fullContent.style.display === 'none') {
-                    fullContent.style.display = 'block';
-                    ticketDescription.style.display = 'none';
-                    this.style.display = 'none';
-                }
-            });
-        });
-
-        document.querySelectorAll('.read-less-link').forEach(link => {
-            link.addEventListener('click', function (event) {
-                event.preventDefault();
-                const ticketId = this.getAttribute('data-ticket-id');
-                const fullContent = document.getElementById('fullContent' + ticketId);
-                const ticketDescription = document.getElementById('ticketDescription' + ticketId);
-
-                if (fullContent.style.display === 'block') {
-                    fullContent.style.display = 'none';
-                    ticketDescription.style.display = 'block';
-                    document.querySelector('.read-more-link[data-ticket-id="' + ticketId + '"]').style.display = 'block';
-                }
-            });
-        });
-
-        document.querySelectorAll('.replyForm').forEach(form => {
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
-                const formData = new FormData(this);
-
-                fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 1) {
-                            toastr.success(data.msg);
-
-                            const ticketId = formData.get('ticket_id');
-                            const repliesSection = document.getElementById('replies' + ticketId);
-                            const replyContent = formData.get('reply_content');
-                            const userId = "<?php use App\Libraries\CIAuth;
-
-                            CIAuth::id() ?>";
-
-                            const replyClass = (userId == <?= $ticket['user_id'] ?>) ? 'ticket-creator-reply' : 'other-reply';
-
-                            const replyHTML = `
-                            <div class="reply mb-3 ${replyClass}">
-                                <p><b>User ID:</b> ${userId}</p>
-                                <p>${replyContent}</p>
-                                <p class="text-muted"><small>Just now</small></p>
-                            </div>
-                        `;
-
-                            repliesSection.insertAdjacentHTML('beforeend', replyHTML);
-
-                            form.reset();
-                        } else {
-                            toastr.error(data.msg);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        toastr.error('An error occurred. Please try again.');
-                    });
-            });
-        });
-    });
+$(document).ready(function() {
+    // Add any JavaScript/jQuery for additional interactions if necessary
+});
 </script>
-
 <?= $this->endSection() ?>

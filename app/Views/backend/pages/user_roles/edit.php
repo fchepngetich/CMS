@@ -10,7 +10,7 @@
                 <nav aria-label="breadcrumb" role="navigation">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="<?= route_to('admin.home') ?>">Home</a>
+                            <a href="<?= base_url('admin/home') ?>">Home</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
                             Manage Roles
@@ -20,11 +20,12 @@
             </div>
             <div class="col-md-6 col-sm-12 text-right">
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#user-modal">
-                    <a href="/userroles">View Roles</a>
+                    <a href="<?= base_url('/userroles') ?>">View Roles</a>
                 </button>
             </div>
         </div>
-    </div>        <form action="/userroles/update/<?= $role['id'] ?>" method="post">
+    </div>       
+<form action="<?= base_url('/userroles/update/' . $role['id']) ?>" method="post">
     <?= csrf_field() ?>
     <div class="form-group">
         <label for="role_name">Role Name</label>
